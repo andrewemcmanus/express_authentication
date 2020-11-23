@@ -26,6 +26,10 @@ const sessionObject = {
 
 app.use(session(sessionObject));
 
+// initialize Passport and run through middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.get('/', (req, res) => {
   res.render('index');
 });
