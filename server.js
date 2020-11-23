@@ -8,7 +8,7 @@ const SECRET_SESSION = process.env.SECRET_SESSION;
 // console.log(SECRET_SESSION);
 const app = express();
 // add the isLoggedIn middleware here:
-const isLoggenIn = require('./middleware/isLoggedIn');
+const isLoggedIn = require('./middleware/isLoggedIn');
 
 app.set('view engine', 'ejs');
 
