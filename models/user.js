@@ -1,5 +1,5 @@
 'use strict';
-const bcrypt: require('bcrypt');
+const bcrypt = require('bcrypt');
 // add bcrypt
 const {
   Model
@@ -46,26 +46,25 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'user',
   });
+  user.addHook('beforeCreate', function(pendingUser) {
+    // have Bcrypt hash a password for us:
+    let hash = bcrypt.hashSync(pendingUser.password, 12);
+    // set password to equal the hash
+    pendingUser.password = hash;
+  });
+
+  user.prototype.validPassword = function(passwordTyped) {
+    let correctPassword = bcrypt.compareSync(passwordTyped, this.password);
+    // return true or false based on whether the password is correct
+    return correctPassword;
+  }
+
+  // remove the password before it gets serialized:
+  // deletes the password from the REQ, but not from the database
+  user.prototype.toJSON = function() {
+    let userData = this.get();
+    delete userdata.password;
+    return userData;
+  }
   return user;
 };
-
-user.addHook('beforeCreate', function(pendingUser) {
-  // have Bcrypt hash a password for us:
-  let hash = bcrypt.hashSync(pendingUser.password, 12);
-  // set password to equal the hash
-  pendingUser.password = hash;
-});
-
-user.prototype.validPassword = function(passwordTyped) {
-  let correctPassword = bcrypt.compareSync(passwordTyped, this.password);
-  // return true or false based on whether the password is correct
-  return correctPassword;
-}
-
-// remove the password before it gets serialized:
-// deletes the password from the REQ, but not from the database
-user.prototype.toJSON = function() {
-  let userData = this.get();
-  delete userdata.password;
-  return userData;
-}
