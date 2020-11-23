@@ -37,8 +37,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         len: {
-          args: [12,99],
-          msg: 'password must be between 12 and 99 characters'
+          args: [8,99],
+          msg: 'password must be between 8 and 99 characters'
         }
       }
     }
@@ -51,10 +51,12 @@ module.exports = (sequelize, DataTypes) => {
     let hash = bcrypt.hashSync(pendingUser.password, 12);
     // set password to equal the hash
     pendingUser.password = hash;
+    console.log(pendingUser);
   });
 
   user.prototype.validPassword = function(passwordTyped) {
     let correctPassword = bcrypt.compareSync(passwordTyped, this.password);
+    console.log('Inside of validPassword')
     // return true or false based on whether the password is correct
     return correctPassword;
   }
@@ -63,7 +65,8 @@ module.exports = (sequelize, DataTypes) => {
   // deletes the password from the REQ, but not from the database
   user.prototype.toJSON = function() {
     let userData = this.get();
-    delete userdata.password;
+    delete userData.password;
+    console.log(userData);
     return userData;
   }
   return user;
