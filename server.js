@@ -7,6 +7,8 @@ const flash = require('connect-flash');
 const SECRET_SESSION = process.env.SECRET_SESSION;
 // console.log(SECRET_SESSION);
 const app = express();
+// add the isLoggedIn middleware here:
+const isLoggenIn = require('./middleware/isLoggedIn');
 
 app.set('view engine', 'ejs');
 
@@ -41,12 +43,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', , isLoggedIn, (req, res) => {
+app.get('/', (req, res) => {
   console.log(res.locals.alerts);
   res.render('index', { alerts: res.locals.alerts });
 });
 
-app.get('/profile', (req, res) => {
+app.get('/profile', isLoggedIn, (req, res) => {
   res.render('profile');
 });
 
